@@ -74,15 +74,21 @@ def process_frames(video_path, frame_queue, width, height):
 def play_ascii_frames(frame_queue, fps):
     """Play ASCII frames from the queue."""
     frame_delay = 1 / fps
+    first_frame = True  # Track if this is the first frame
     while True:
         start_time = time.time()
         ascii_frame = frame_queue.get()
         if ascii_frame is None:
             break
 
-        # Clear the console screen
-        os.system('cls' if os.name == 'nt' else 'clear')
-        print(ascii_frame)
+        if first_frame:
+            first_frame = False
+        else:
+            # Move the cursor to the top-left corner without clearing the screen
+            print("\033[H", end="")  # ANSI escape code to move cursor to top-left
+
+        # Print the ASCII frame
+        print(ascii_frame, end="", flush=True)
 
         # Calculate elapsed time and wait for remaining frame time
         elapsed_time = time.time() - start_time
