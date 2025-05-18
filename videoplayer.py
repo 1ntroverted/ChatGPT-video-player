@@ -3,6 +3,7 @@ import os
 import sys
 import threading
 from queue import Queue
+import time
 
 # ASCII characters used to represent pixel intensity
 ASCII_CHARS = "@%#*+=-:. "
@@ -72,15 +73,21 @@ def process_frames(video_path, frame_queue, width, height):
 
 def play_ascii_frames(frame_queue, fps):
     """Play ASCII frames from the queue."""
+    frame_delay = 1 / fps
     while True:
+        start_time = time.time()
         ascii_frame = frame_queue.get()
         if ascii_frame is None:
             break
+
         # Clear the console screen
         os.system('cls' if os.name == 'nt' else 'clear')
         print(ascii_frame)
-        # Delay to simulate the frame rate
-        cv2.waitKey(max(1, int(1000 / fps)))
+
+        # Calculate elapsed time and wait for remaining frame time
+        elapsed_time = time.time() - start_time
+        remaining_time = max(0, frame_delay - elapsed_time)
+        time.sleep(remaining_time)
 
 def main():
     try:
