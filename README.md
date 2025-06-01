@@ -1,1 +1,1 @@
-# ChatGPT-video-player-with-text
+# ChatGPT-video-player
